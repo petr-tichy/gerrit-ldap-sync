@@ -29,7 +29,7 @@ LDAP_BASE = 'cn=users,cn=accounts,dc=intgdc,dc=com'
 LDAP_FILTER = '(&(objectClass=inetOrgPerson)(memberOf=cn=gerrit-user-groups,cn=groups,cn=accounts,dc=intgdc,dc=com))'
 LDAP_ATTRS = ['uid', 'ipaSshPubKey']
 
-DEBUG_KEY_CONTENT = u''')]}'
+DUMMY_KEY_CONTENT = u''')]}'
 [
   {
     "seq": 1,
@@ -114,7 +114,7 @@ class GerritClient(object):
         url = GERRIT_URL + url
         cookie = {'GerritAccount': self.auth_cookie}
 
-        if config.dry_run:
+        if config.test:
             r = NameSpace()
             if method == 'GET':
                 r.status_code = requests.codes.ok
@@ -137,7 +137,7 @@ class GerritClient(object):
 
         log.debug('Gerrit login with {!r}'.format(self.user))
 
-        if config.debug:
+        if config.test:
             self.auth_cookie = 'DUMMY'
             return
 
@@ -162,7 +162,7 @@ class GerritClient(object):
     def get_gerrit_keys(self):
         self.register()
         if config.test:
-            content = DEBUG_KEY_CONTENT
+            content = DUMMY_KEY_CONTENT
         else:
             r = self.make_request('/a/accounts/self/sshkeys')
             content = r.content
