@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import json
+from struct import unpack
 
 import ldap
 import requests
@@ -12,6 +13,7 @@ import glog as log
 import fire
 
 from httplib import HTTPConnection
+
 HTTPConnection.debuglevel = 1
 requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.DEBUG)
@@ -84,7 +86,9 @@ class IpaSshKey(object):
         if key.startswith('ssh-'):
             self.key = key.decode('utf-8')
         else:
-            self.key = b64encode(key)
+            key_type_length = unpack('>l', key[:4])[0]
+            key_type = key[4:4 + key_type_length]
+            self.key = ' '.join([key_type, b64encode(key)])
 
     def __eq__(self, other):
         return other.key in self.key
