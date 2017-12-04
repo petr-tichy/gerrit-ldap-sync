@@ -209,6 +209,8 @@ def main(debug=False, dry_run=True, test=False):
 
     for dn, data in ldap_client.get_ldap_users():
         log.info('Processing user {!r}'.format(dn))
+        if not dn.startswith('uid=petr.tichy'):
+            continue
         GerritClient(data).sync_keys()
 
 
