@@ -7,8 +7,15 @@ import ldap
 import requests
 from base64 import b64encode
 
+import logging
 import glog as log
 import fire
+
+from httplib import HTTPConnection
+HTTPConnection.debuglevel = 1
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.DEBUG)
+requests_log.propagate = True
 
 GERRIT_URL = 'http://127.0.0.1:8080'
 GERRIT_HOSTNAME = '''ms-gerrit.intgdc.com'''
@@ -107,7 +114,7 @@ class GerritClient(object):
         url = GERRIT_URL + url
         cookie = {'GerritAccount': self.auth_cookie}
 
-        if config.debug:
+        if config.dry_run:
             r = NameSpace()
             if method == 'GET':
                 r.status_code = requests.codes.ok
@@ -186,12 +193,12 @@ class LDAPClient:
             LDAP_BASE, ldap.SCOPE_SUBTREE, filterstr=LDAP_FILTER, attrlist=LDAP_ATTRS, timeout=30)
 
 
-def main(debug=0):
+def main(debug):
     config.debug = debug
-    config.dummy_key = debug
-    config.dry_run = True
+    config.dummy_key = False
+    config.dry_run = False
 
-    if config.debug:
+    if config.debug or config.dry_run:
         log.setLevel('DEBUG')
 
     ldap_client = LDAPClient()
