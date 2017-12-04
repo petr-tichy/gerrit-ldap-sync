@@ -18,7 +18,7 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 
 GERRIT_URL = 'http://127.0.0.1:8080'
-GERRIT_HOSTNAME = '''ms-gerrit.intgdc.com'''
+GERRIT_HOSTNAME = '''ms-gerrit-stg.na.intgdc.com'''
 DEFAULT_HEADERS = {'Host': GERRIT_HOSTNAME, 'User-Agent': 'Python-LDAP-Gerrit-sync'}
 
 LDAP_USER = 'uid=viewer,cn=sysaccounts,cn=etc,dc=intgdc,dc=com'
@@ -193,10 +193,10 @@ class LDAPClient:
             LDAP_BASE, ldap.SCOPE_SUBTREE, filterstr=LDAP_FILTER, attrlist=LDAP_ATTRS, timeout=30)
 
 
-def main(debug):
+def main(debug=False, dry_run=True):
     config.debug = debug
     config.dummy_key = False
-    config.dry_run = False
+    config.dry_run = dry_run
 
     if config.debug or config.dry_run:
         log.setLevel('DEBUG')
