@@ -56,7 +56,7 @@ class NameSpace(object):
 
 
 config = NameSpace()
-config.debug = config.dummy_key = config.dry_run = None
+config.debug = config.test = config.dry_run = None
 
 
 class GerritSshKey(object):
@@ -161,7 +161,7 @@ class GerritClient(object):
 
     def get_gerrit_keys(self):
         self.register()
-        if config.dummy_key:
+        if config.test:
             content = DEBUG_KEY_CONTENT
         else:
             r = self.make_request('/a/accounts/self/sshkeys')
@@ -193,10 +193,10 @@ class LDAPClient:
             LDAP_BASE, ldap.SCOPE_SUBTREE, filterstr=LDAP_FILTER, attrlist=LDAP_ATTRS, timeout=30)
 
 
-def main(debug=False, dry_run=True):
+def main(debug=False, dry_run=True, test=False):
     config.debug = debug
-    config.dummy_key = False
     config.dry_run = dry_run
+    config.test = test
 
     if config.debug or config.dry_run:
         log.setLevel('DEBUG')
