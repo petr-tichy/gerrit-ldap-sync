@@ -17,10 +17,9 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 
 
-def main(debug=False, dry_run=True, test=False):
+def main(debug=False, dry_run=True):
     config.debug = debug
     config.dry_run = dry_run
-    config.test = test
 
     if config.debug or config.dry_run:
         log.setLevel('DEBUG')
@@ -29,8 +28,6 @@ def main(debug=False, dry_run=True, test=False):
 
     for dn, data in ldap_client.get_ldap_users():
         log.info('Processing user {!r}'.format(dn))
-        if not dn.startswith('uid=petr.tichy'):
-            continue
         GerritClient(data).sync_keys()
 
 

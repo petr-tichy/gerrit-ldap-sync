@@ -24,7 +24,6 @@ httpretty.HTTPretty.allow_net_connect = False
 def test_register():
     config.debug = True
     config.dry_run = False
-    config.test = False
 
     httpretty.register_uri(httpretty.GET, config.GERRIT_URL + '/login',
                            status=302,
@@ -41,7 +40,6 @@ def test_register():
 def test_list_ssh_keys():
     config.debug = True
     config.dry_run = False
-    config.test = False
 
     httpretty.register_uri(httpretty.GET, config.GERRIT_URL + '/a/accounts/self/sshkeys',
                            body=config.DUMMY_KEY_CONTENT)
@@ -55,15 +53,17 @@ def test_list_ssh_keys():
 
 
 def test_load_user_name():
+    config.debug = True
+
     gerrit_client = GerritClient(LDAP_DATA_NO_KEYS)
 
     expect(gerrit_client.user).to.be.equal('user.name')
 
 
 def test_load_ipa_keys_no_key():
+    config.debug = True
+
     gerrit_client = GerritClient(LDAP_DATA_NO_KEYS)
 
     expect(gerrit_client.ipa_keys).to.be.a(list)
     expect(gerrit_client.ipa_keys).to.have.length_of(0)
-
-def test_read_ldap():

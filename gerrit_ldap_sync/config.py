@@ -33,4 +33,5 @@ DUMMY_KEY_CONTENT = u''')]}'
 ]
 '''
 
-debug = test = dry_run = None
+debug = False
+dry_run = True
