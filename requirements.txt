@@ -1,3 +1,7 @@
 python-ldap
 requests
 glog
+fire
+httpretty
+sure
+nose
