@@ -3,9 +3,19 @@ import json
 import glog as log
 import requests
 
-from gerrit_ldap_sync import config
-from gerrit_ldap_sync.gerritsshkey import GerritSshKey
-from gerrit_ldap_sync.ipdasshkey import IpaSshKey
+import config
+from .gerritsshkey import GerritSshKey
+from .ipdasshkey import IpaSshKey
+from .exceptions import *
+
+
+def _strip_content(content):
+    return content[content.find('\n') + 1:]
+
+
+def _parse_json(content):
+    content = _strip_content(content)
+    return json.loads(content)
 
 
 class GerritClient(object):
@@ -15,9 +25,9 @@ class GerritClient(object):
         self.ipa_keys = [IpaSshKey(self, key) for key in ldap_data.get('ipaSshPubKey', [])]
         self.gerrit_keys = []
 
-    def make_request(self, url, method='GET', data=None):
+    def make_request(self, url, method='GET', data=None, user=None):
         headers = config.DEFAULT_HEADERS
-        headers.update({'REMOTE_USER': self.user})
+        headers.update({'REMOTE_USER': user or self.user})
         url = config.GERRIT_URL + url
         cookie = {'GerritAccount': self.auth_cookie}
 
@@ -28,9 +38,19 @@ class GerritClient(object):
         elif method == 'POST':
             return requests.post(url, headers=headers, cookies=cookie, data=data)
 
-    def login(self):
+    def user_exists(self):
+        r = self.make_request('/a/accounts/?q=username:' + self.user, user=config.ADMINISTRATOR)
+        if r.status_code == requests.codes.ok:
+            json_data = _parse_json(r.content)
+            if len(json_data) == 1:
+                return True
+
+    def login(self, register=False):
         if self.auth_cookie is not None:
             return
+
+        if not register and not self.user_exists():
+            raise UserNotRegistered
 
         log.info('Gerrit login with {!r}'.format(self.user))
 
@@ -43,15 +63,26 @@ class GerritClient(object):
             if location.startswith(config.GERRIT_REDIRECT_LOCATION + '/#/register'):
                 log.info('Registered user {!r}'.format(self.user))
         else:
-            raise RuntimeError
+            raise RuntimeError('Failed to login as {!r}'.format(self.user))
+
+    def get_user(self):
+        try:
+            self.login()
+        except UserNotRegistered:
+            log.info('User {!r} not registered'.format(self.user))
+            try:
+                self.login(register=True)
+            except UserNotRegistered:
+                raise RuntimeError('Failed to register user {!r}'.format(self.user))
 
     def get_gerrit_keys(self):
-        self.login()
+        self.get_user()
         r = self.make_request('/a/accounts/self/sshkeys')
-        content = r.content
-        content = content[content.find('\n') + 1:]
-        json_data = json.loads(content)
-        self.gerrit_keys = [GerritSshKey(self, key) for key in json_data]
+        if r.status_code == requests.codes.ok:
+            json_data = _parse_json(r.content)
+            self.gerrit_keys = [GerritSshKey(self, key) for key in json_data]
+        else:
+            raise RuntimeError('Failed to get kes for {!r}'.format(self.user))
 
     def sync_keys(self):
         self.get_gerrit_keys()

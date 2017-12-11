@@ -12,26 +12,7 @@ GERRIT_HOSTNAME = 'ms-gerrit-stg.na.intgdc.com'
 GERRIT_REDIRECT_LOCATION = ''.join([GERRIT_PROTOCOL, '://', GERRIT_HOSTNAME])
 DEFAULT_HEADERS = {'Host': GERRIT_HOSTNAME, 'User-Agent': 'Python-LDAP-Gerrit-sync'}
 
-DUMMY_KEY_CONTENT = u''')]}'
-[
-  {
-    "seq": 1,
-    "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA7CBjWNevcHv80u889nWxCHKLlR5hMCB1GPNKWlRBwCNGVrkoEUOa9cdAwOZUvgtTnh7YQJo114OdEz6bi53cfHIBBA2bNYoRVVOZJrYV34mx24mUZrPZtSefIS/B3BmfzzzI4YC2rrHDnHnl6rZQGMpX9OawBkDMEG7+VoOqHaCjTybsXMHxVsmLxwGA19WhEiX4Pzi/mjdZGpaM2FqlgUdMe0nBUOR2Aky72AU6dfVVucxHer/hv1t+qmUCzmRzofGqu+T9+rL3OJKBrTIpF8KOF5Eui9AHRWeDilnwKfVjaeQSzimX9qmF9wWh11ps7eAcy1pVSxBtWsXpKZQFGw== john.doe@example.com",
-    "encoded_key": "AAAAB3NzaC1yc2EAAAABIwAAAQEA7CBjWNevcHv80u889nWxCHKLlR5hMCB1GPNKWlRBwCNGVrkoEUOa9cdAwOZUvgtTnh7YQJo114OdEz6bi53cfHIBBA2bNYoRVVOZJrYV34mx24mUZrPZtSefIS/B3BmfzzzI4YC2rrHDnHnl6rZQGMpX9OawBkDMEG7+VoOqHaCjTybsXMHxVsmLxwGA19WhEiX4Pzi/mjdZGpaM2FqlgUdMe0nBUOR2Aky72AU6dfVVucxHer/hv1t+qmUCzmRzofGqu+T9+rL3OJKBrTIpF8KOF5Eui9AHRWeDilnwKfVjaeQSzimX9qmF9wWh11ps7eAcy1pVSxBtWsXpKZQFGw==",
-    "algorithm": "ssh-rsa",
-    "comment": "john.doe@example.com",
-    "valid": true
-  },
-  {
-    "seq": 2,
-    "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA7CBjWNevcHv80u889nWxCHKLlR5hMCB1GPNKWlRBwCNGVrkoEUOa9cdAwOZUvgtTnh7YQJo114OdEz6bi53cfHIBBA2bNYoRVVOZJrYV34mx24mUZrPZtSefIS/B3BmfzzzI4YC2rrHDnHnl6rZQGMpX9OawBkDMEG7+VoOqHaCjTybsXMHxVsmLxwGA19WhEiX4Pzi/mjdZGpaM2FqlgUdMe0nBUOR2Aky72AU6dfVVucxHer/hv1t+qmUCzmRzofGqu+T9+rL3OJKBrTIpF8KOF5Eui9AHRWeDilnwKfVjaeQSzimX9qmF9wWh11ps7eAcy1pVSxBtWsXpKZQFGw== john.doe@example.com",
-    "encoded_key": "AAAAB3NzaC1yc2EAAAABIwAAAQEA7CBjWNevcHv80u889nWxCHKLlR5hMCB1GPNKWlRBwCNGVrkoEUOa9cdAwOZUvgtTnh7YQJo114OdEz6bi53cfHIBBA2bNYoRVVOZJrYV34mx24mUZrPZtSefIS/B3BmfzzzI4YC2rrHDnHnl6rZQGMpX9OawBkDMEG7+VoOqHaCjTybsXMHxVsmLxwGA19WhEiX4Pzi/mjdZGpaM2FqlgUdMe0nBUOR2Aky72AU6dfVVucxHer/hv1t+qmUCzmRzofGqu+T9+rL3OJKBrTIpF8KOF5Eui9AHRWeDilnwKfVjaeQSzimX9qmF9wWh11ps7eAcy1pVSxBtWsXpKZQFGw==",
-    "algorithm": "ssh-rsa",
-    "comment": "john.doe@example.com",
-    "valid": true
-  }
-]
-'''
+ADMINISTRATOR = 'Administrator'
 
 debug = False
 dry_run = True
