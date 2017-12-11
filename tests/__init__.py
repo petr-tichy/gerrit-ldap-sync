@@ -32,10 +32,15 @@ LDAP_DATA = {'ipaSshPubKey': [
 LDAP_DATA_NO_KEYS = {'ipaSshPubKey': [],
                      'uid': ['user.name']}
 
-GERRIT_USER_QUERY_REPLY = u''')]}'
+GERRIT_EXISTING_USER_QUERY_REPLY = u''')]}'
 [
     {
       "_account_id": 1000001
     }
+]
+'''
+
+GERRIT_NEW_USER_QUERY_REPLY = u''')]}'
+[
 ]
 '''

@@ -70,21 +70,27 @@ class GerritClient(object):
             self.login()
         except UserNotRegistered:
             log.info('User {!r} not registered'.format(self.user))
-            try:
-                self.login(register=True)
-            except UserNotRegistered:
-                raise RuntimeError('Failed to register user {!r}'.format(self.user))
+            if config.dry_run:
+                log.info('Would register {!r}'.format(self.user))
+            else:
+                try:
+                    self.login(register=True)
+                except UserNotRegistered:
+                    raise RuntimeError('Failed to register user {!r}'.format(self.user))
 
     def get_gerrit_keys(self):
-        self.get_user()
-        r = self.make_request('/a/accounts/self/sshkeys')
-        if r.status_code == requests.codes.ok:
-            json_data = _parse_json(r.content)
-            self.gerrit_keys = [GerritSshKey(self, key) for key in json_data]
+        if config.dry_run:
+            log.info('Would get SSH keys for {!r}'.format(self.user))
         else:
-            raise RuntimeError('Failed to get kes for {!r}'.format(self.user))
+            r = self.make_request('/a/accounts/self/sshkeys')
+            if r.status_code == requests.codes.ok:
+                json_data = _parse_json(r.content)
+                self.gerrit_keys = [GerritSshKey(self, key) for key in json_data]
+            else:
+                raise RuntimeError('Failed to get kes for {!r}'.format(self.user))
 
     def sync_keys(self):
+        self.get_user()
         self.get_gerrit_keys()
         [key.remove() for key in self.gerrit_keys if key not in self.ipa_keys]
         [key.add() for key in self.ipa_keys if key not in self.gerrit_keys]

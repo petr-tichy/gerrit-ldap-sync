@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 from sure import expect
 import httpretty
+import re
 
 import tests
 
@@ -27,4 +28,12 @@ def test_dry_run():
     httpretty.register_uri(httpretty.GET, config.GERRIT_URL + '/a/accounts/self/sshkeys',
                            body=tests.GERRIT_DUMMY_KEY_BODY)
 
-    expect(gerrit_ldap_sync.main()).when.called_with().to.return_value(None)
+    httpretty.register_uri(httpretty.GET,
+                           re.compile(config.GERRIT_URL + '/a/accounts/\?q=(\w+)'),
+                           match_querystring=True,
+                           body=tests.GERRIT_EXISTING_USER_QUERY_REPLY)
+
+    expect(gerrit_ldap_sync.main).when.called_with().to.return_value(None)
+
+
+test_dry_run.slow = 1
