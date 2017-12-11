@@ -7,7 +7,7 @@ import fire
 
 from httplib import HTTPConnection
 
-import gerrit_ldap_sync.config
+import config
 from gerrit_ldap_sync.ldapclient import LDAPClient
 from gerrit_ldap_sync.gerritclient import GerritClient
 
